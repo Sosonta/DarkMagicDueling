@@ -409,3 +409,14 @@ background-color: #222;
 main, nav, section, header, footer {
   opacity: 0.98;
 }
+
+.collection-card {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.collection-card.visible {
+  opacity: 1;
+  transform: scale(1);
+}

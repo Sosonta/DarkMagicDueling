@@ -251,57 +251,57 @@ cardsToShow.sort((a, b) => {
 
   const filteredCards = applyFilters(cardsToShow);
 
-  filteredCards.forEach(card => {
-    const qty = ownedCards[card.name]?.qty || 0;
+filteredCards.forEach(card => {
+  const qty = ownedCards[card.name]?.qty || 0;
 
-    const cardEl = document.createElement("div");
-    cardEl.classList.add("collection-card");
+  const cardEl = document.createElement("div");
+  cardEl.classList.add("collection-card");
 
-    const img = document.createElement("img");
-    img.src = card.image_url;
-    img.alt = card.name;
-    img.title = `${card.name} (x${qty})`;
+  const img = document.createElement("img");
+  img.src = card.image_url;
+  img.alt = card.name;
+  img.title = `${card.name} (x${qty})`;
 
-img.addEventListener("click", () => {
-  previewImg.style.opacity = 0;
-  previewImg.onload = () => previewImg.style.opacity = 1;
-  previewImg.src = card.image_url;
+  img.onload = () => {
+    cardEl.classList.add("visible");
+  };
 
-  selectedCard = card;
+  img.addEventListener("click", () => {
+    previewImg.style.opacity = 0;
+    previewImg.onload = () => previewImg.style.opacity = 1;
+    previewImg.src = card.image_url;
 
-  const qtyDisplay = document.getElementById("card-qty-display");
-  qtyDisplay.textContent = `x${userCollection[card.name]?.qty || 0}`;
-
-  const controls = document.getElementById("card-controls");
-  controls.style.display = "flex"; // Show the controls
-});
-
-img.addEventListener("contextmenu", (e) => {
-  e.preventDefault();
-  const isExtra = /(Fusion|Synchro|XYZ|Link)/i.test(card.type);
-  const validZones = isExtra ? ["extra", "side"] : ["main", "side"];
-
-  for (const zone of validZones) {
-    const count = deck[zone].reduce((sum, c) => sum + (c.name === card.name ? c.count : 0), 0);
-    if (count < 3 && deck[zone].length < deckLimits[zone]) {
-      addToDeck(zone, { name: card.name, image_url: card.image_url });
-      renderDeck();
-      break;
-    }
-  }
-});
-
-    img.setAttribute("draggable", "true");
-    img.addEventListener("dragstart", (e) => {
-      e.dataTransfer.setData("text/plain", JSON.stringify({
-        name: card.name,
-        image_url: card.image_url
-      }));
-    });
-
-    cardEl.appendChild(img);
-    collectionGrid.appendChild(cardEl);
+    selectedCard = card;
+    document.getElementById("card-qty-display").textContent = `x${userCollection[card.name]?.qty || 0}`;
+    document.getElementById("card-controls").style.display = "flex";
   });
+
+  img.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    const isExtra = /(Fusion|Synchro|XYZ|Link)/i.test(card.type);
+    const validZones = isExtra ? ["extra", "side"] : ["main", "side"];
+
+    for (const zone of validZones) {
+      const count = deck[zone].reduce((sum, c) => sum + (c.name === card.name ? c.count : 0), 0);
+      if (count < 3 && deck[zone].length < deckLimits[zone]) {
+        addToDeck(zone, { name: card.name, image_url: card.image_url });
+        renderDeck();
+        break;
+      }
+    }
+  });
+
+  img.setAttribute("draggable", "true");
+  img.addEventListener("dragstart", (e) => {
+    e.dataTransfer.setData("text/plain", JSON.stringify({
+      name: card.name,
+      image_url: card.image_url
+    }));
+  });
+
+  cardEl.appendChild(img);
+  collectionGrid.appendChild(cardEl);
+});
 
   console.log("Rendering filtered collection:", filteredCards.map(c => c.name));
 }
