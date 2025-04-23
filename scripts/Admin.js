@@ -42,6 +42,8 @@ li.addEventListener("click", () => {
   userModal.classList.remove("hidden");
 }
 
+let allowedCardNames = new Set();
+
 // --- Global State ---
 let selectedUser = null;
 let selectedPool = null;
@@ -528,7 +530,8 @@ window.clearPool = clearPool;
 window.deletePool = deletePool;
 
 function renderCardGrid(cards = cardData) {
-  const filtered = applyFilters(cards); // Apply filters first
+  const filtered = applyFilters(cards);
+  allowedCardNames = new Set(filtered.map(c => c.name)); // 🔥 Set allowed names
 
   const totalPages = Math.ceil(filtered.length / cardsPerPage);
   currentPage = Math.min(currentPage, totalPages || 1);
@@ -542,23 +545,18 @@ function renderCardGrid(cards = cardData) {
     cardImg.src = card.image_url;
     cardImg.alt = card.name;
     cardImg.title = card.name;
-    cardImg.classList.add('card-fade'); // Start with hidden
+    cardImg.classList.add('card-fade');
 
-cardImg.onload = () => {
-  cardImg.classList.add('visible');
-};
+    cardImg.onload = () => cardImg.classList.add('visible');
+    if (cardImg.complete) cardImg.classList.add('visible');
 
-if (cardImg.complete) {
-  cardImg.classList.add('visible');
-}
-
-cardImg.addEventListener('click', () => {
-  selectedCard = card;
-  previewImg.style.opacity = 0;
-  previewImg.onload = () => (previewImg.style.opacity = 1);
-  previewImg.src = card.image_url;
-  playCardSelectSound();
-});
+    cardImg.addEventListener('click', () => {
+      selectedCard = card;
+      previewImg.style.opacity = 0;
+      previewImg.onload = () => (previewImg.style.opacity = 1);
+      previewImg.src = card.image_url;
+      playCardSelectSound();
+    });
 
     cardImg.setAttribute('draggable', 'true');
     cardImg.addEventListener('dragstart', (e) => {
@@ -571,6 +569,18 @@ cardImg.addEventListener('click', () => {
   pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
   prevPageBtn.disabled = currentPage <= 1;
   nextPageBtn.disabled = currentPage >= totalPages;
+
+  // 🟡 NEW: Filter rarity grid after rendering
+  filterRarityGrids();
+}
+
+function filterRarityGrids() {
+  Object.values(rarityGrids).forEach(grid => {
+    grid.querySelectorAll("img").forEach(img => {
+      const isVisible = allowedCardNames.has(img.alt);
+      img.style.display = isVisible ? "inline-block" : "none";
+    });
+  });
 }
 
 prevPageBtn.addEventListener('click', () => {
