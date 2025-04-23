@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./styles/global.css">
+  <link rel="stylesheet" href="" id="page-style"> <!-- ✅ EMPTY HREF -->
+  <link rel="icon" href="./ui-images/favicon.ico" />
+</head>
+<body>
+
+  <!-- Shared Background Video -->
+  <video autoplay muted loop playsinline id="background-video">
+    <source src="background-loop.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Persistent Navbar -->
+  <nav>
+    <ul class="navbar">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#duel-id">Duel-ID</a></li>
+      <li><a href="#card-case">Card Case</a></li>
+      <li><a href="#pack-opener">Pack Opener</a></li>
+      <li><a href="#admin">Admin</a></li>
+    </ul>
+  </nav>
+
+  <!-- Page Swap Target -->
+  <main id="content"></main>
+
+  <!-- Global Background Music -->
+  <audio id="bgm" src="./Sound-Effects/Menu-Theme-01.mp3" loop></audio>
+
+  <!-- Scripts -->
+  <script type="module" src="./scripts/firebase.js"></script>
+  <script type="module" src="./scripts/bgm.js"></script>
+  <script type="module" src="./scripts/router.js"></script>
+</body>
+</html>
